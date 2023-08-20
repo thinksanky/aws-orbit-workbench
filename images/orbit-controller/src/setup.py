@@ -25,7 +25,7 @@ setup(
     python_requires=">=3.7, <3.9",
     install_requires=[
         "boto3~=1.19.0",
-        "click~=7.1.0",
+        "click>=8.0.0",
         "kubernetes~=12.0.1",
         "pyyaml~=5.4",
         "requests>=2.25.1,<2.32.0",
