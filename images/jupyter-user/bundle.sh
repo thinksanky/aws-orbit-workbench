@@ -46,6 +46,14 @@ if [ -d "${DIR}/../aws-orbit/" ]; then
     --exclude aws_orbit.egg-info --exclude __pycache__
 fi
 
+#Copy the codeseeder source code
+if [ -d "${DIR}/../../../" ]; then
+    rsync -av --progress ${DIR}/../aws-orbit/ ${ARCHIVE_DIR}/aws-orbit \
+    --exclude codeseeder.out --exclude .orbit.out --exclude .mypy_cache \
+    --exclude build --exclude dist --exclude docs \
+    --exclude aws_orbit.egg-info --exclude __pycache__
+fi
+
 if [ -d "${DIR}/../aws-orbit-sdk/" ]; then
     rsync -av --progress ${DIR}/../aws-orbit-sdk/ ${ARCHIVE_DIR}/aws-orbit-sdk \
     --exclude codeseeder.out --exclude .orbit.out --exclude .mypy_cache \
@@ -62,6 +70,16 @@ if [ -d "${DIR}/../jupyterlab_orbit/" ]; then
     --exclude __pycache__
 fi
 
+# Copy the aws_codeseeder from local build
+if [ -d "${DIR}/../aws_codeseeder/" ]; then
+    rsync -av --progress ${DIR}/../aws_codeseeder/ ${ARCHIVE_DIR}/aws_codeseeder \
+    --exclude aws_codeseeder.egg-info --exclude build \
+    --exclude dist --exclude aws_codeseeder.egg-info \
+    --exclude lib --exclude node_modules \
+    --exclude codeseeder.out --exclude .orbit.out --exclude .mypy_cache \
+    --exclude __pycache__
+fi
+
 cd ${DIR}
 tar czvf aws-orbit_jupyter-user.tar.gz ./aws-orbit_jupyter-user
 
@@ -72,5 +90,7 @@ git branch
 git checkout feature/orbit_databrew_extension
 cd ${DIR}
 tar czvf aws-glue-databrew-jupyter-extension.tar.gz ./aws-glue-databrew-jupyter-extension
+
+pwd
 
 ls -lrta

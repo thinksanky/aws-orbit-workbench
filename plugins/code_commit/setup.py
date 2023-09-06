@@ -43,6 +43,8 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Typing :: Typed",
     ],
-    install_requires=[],
+    install_requires=[
+         "boto3~=1.28.33"
+    ],
     include_package_data=True,
 )

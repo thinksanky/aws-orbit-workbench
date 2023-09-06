@@ -11,15 +11,15 @@ types-python-dateutil~=0.1.6
 types-python-slugify~=0.1.2
 types-requests~=2.25.6
 types-setuptools~=57.0.2
-aws-cdk.core~=1.100.0
-aws-cdk.aws-s3~=1.100.0
-aws-cdk.aws-lambda~=1.100.0
-aws-cdk.aws-redshift~=1.100.0
-aws-cdk.aws-events~=1.100.0
-aws-cdk.aws-events-targets~=1.100.0
-aws-cdk.aws-iam~=1.100.0
-aws-cdk.aws-kms~=1.100.0
-aws-cdk.aws-sns~=1.100.0
-aws-cdk.aws-sns-subscriptions~=1.100.0
+aws-cdk.core~=1.204.0
+aws-cdk.aws-s3~=1.204.0
+aws-cdk.aws-lambda~=1.204.0
+aws-cdk.aws-redshift~=1.204.0
+aws-cdk.aws-events~=1.204.0
+aws-cdk.aws-events-targets~=1.204.0
+aws-cdk.aws-iam~=1.204.0
+aws-cdk.aws-kms~=1.204.0
+aws-cdk.aws-sns~=1.204.0
+aws-cdk.aws-sns-subscriptions~=1.204.0
 -e ../../cli/
 -e .

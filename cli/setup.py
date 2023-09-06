@@ -40,7 +40,7 @@ setup(
     keywords=["aws", "cdk"],
     python_requires=">=3.7",
     install_requires=[
-        "boto3~=1.19.0",
+        "boto3~=1.28.33",
         "PyYAML>=5.4",
         "click>=8.0.0",
         "tqdm~=4.56.0",
@@ -50,7 +50,7 @@ setup(
         "cfn-flip~=1.2.3",
         "python-slugify~=4.0.1",
         "kubernetes~=12.0.1",
-        "aws-codeseeder~=0.1.0",
+        "aws-codeseeder~=0.10.0",
     ],
     entry_points={"console_scripts": ["orbit = aws_orbit.__main__:main"]},
     classifiers=[

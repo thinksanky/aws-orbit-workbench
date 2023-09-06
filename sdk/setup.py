@@ -23,7 +23,7 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.7",
     install_requires=[
-        "boto3~=1.19.0",
+        "boto3~=1.28.33",
         "pyyaml>=5.4",
         "ipython>=7.23,<7.32",
         "pandas>=1.1.0,<=1.3.1",

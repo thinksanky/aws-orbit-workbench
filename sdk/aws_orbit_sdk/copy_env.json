@@ -1,0 +1,82 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "EKS Managed Nodes (SSH access: false) [created by eksctl]",
+  "Mappings": {
+    "ServicePrincipalPartitionMap": {
+      "aws": {
+        "EC2": "ec2.amazonaws.com",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com"
+      },
+      "aws-cn": {
+        "EC2": "ec2.amazonaws.com.cn",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com"
+      },
+      "aws-iso": {
+        "EC2": "ec2.c2s.ic.gov",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com"
+      },
+      "aws-iso-b": {
+        "EC2": "ec2.sc2s.sgov.gov",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com"
+      },
+      "aws-us-gov": {
+        "EC2": "ec2.amazonaws.com",
+        "EKS": "eks.amazonaws.com",
+        "EKSFargatePods": "eks-fargate-pods.amazonaws.com"
+      }
+    }
+  },
+  "Resources": {
+    "ManagedNodeGroup": {
+      "Type": "AWS::EKS::Nodegroup",
+      "Properties": {
+        "AmiType": "AL2_x86_64",
+        "ClusterName": "orbit-sky-orbit-env",
+        "InstanceTypes": [
+          "m5.large"
+        ],
+        "Labels": {
+          "alpha.eksctl.io/cluster-name": "orbit-sky-orbit-env",
+          "alpha.eksctl.io/nodegroup-name": "env",
+          "node-group": "env",
+          "node-type": "ec2",
+          "orbit/node-group": "env",
+          "orbit/node-type": "ec2",
+          "orbit/usage": "reserved",
+          "usage": "reserved"
+        },
+        "LaunchTemplate": {
+          "Id": {
+            "Ref": "LaunchTemplate"
+          }
+        },
+        "NodeRole": "arn:aws:iam::451404659786:role/orbit-sky-orbit-env-us-east-1-eks-nodegroup-role",
+        "NodegroupName": "env",
+        "ScalingConfig": {
+          "DesiredSize": 3,
+          "MaxSize": 6,
+          "MinSize": 2
+        },
+        "Subnets": [
+          "subnet-0df3524be7d8be3a5",
+          "subnet-08bf1176ea3f9c76f"
+        ],
+        "Tags": {
+          "Env": "orbit-sky-orbit-env",
+          "alpha.eksctl.io/nodegroup-name": "env",
+          "alpha.eksctl.io/nodegroup-type": "managed",
+          "k8s.io/cluster-autoscaler/node-template/label/node-group": "env",
+          "k8s.io/cluster-autoscaler/node-template/label/node-type": "ec2",
+          "k8s.io/cluster-autoscaler/node-template/label/orbit/node-group": "env",
+          "k8s.io/cluster-autoscaler/node-template/label/orbit/node-type": "ec2",
+          "k8s.io/cluster-autoscaler/node-template/label/orbit/usage": "reserved",
+          "k8s.io/cluster-autoscaler/node-template/label/usage": "reserved"
+        }
+      }
+    }
+  }
+}

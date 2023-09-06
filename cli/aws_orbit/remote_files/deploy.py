@@ -371,17 +371,23 @@ def deploy_env(env_name: str, manifest_dir: str) -> None:
         _logger.debug("DockerHub and ECR Logged in")
         cdk_toolkit.deploy(context=context)
         _logger.debug("CDK Toolkit Stack deployed")
+
+        _logger.debug("Starting Env Stack deployment....")
         env.deploy(
             context=context,
             eks_system_masters_roles_changes=changeset.eks_system_masters_roles_changeset if changeset else None,
         )
 
         _logger.debug("Env Stack deployed")
+
+        _logger.debug("Starting eksctl stack deployment....")
+
         eksctl.deploy_env(
             context=context,
             changeset=changeset,
         )
         _logger.debug("EKS Environment Stack deployed")
+
         kubectl.deploy_env(context=context)
         _logger.debug("Kubernetes Environment components deployed")
 
@@ -458,6 +464,7 @@ def deploy_teams(env_name: str, manifest_dir: str) -> None:
         },
         extra_local_modules={
             "aws-orbit-jupyterlab-orbit": os.path.realpath(os.path.join(ORBIT_CLI_ROOT, "../../jupyterlab_orbit")),
+            "aws-orbit-aws_codeseeder": os.path.realpath(os.path.join(ORBIT_CLI_ROOT, "../../aws_codeseeder")),
             "aws-orbit-emr-on-eks": os.path.realpath(os.path.join(ORBIT_CLI_ROOT, "../../plugins/emr_on_eks")),
             "aws-orbit-custom-cfn": os.path.realpath(os.path.join(ORBIT_CLI_ROOT, "../../plugins/custom_cfn")),
             "aws-orbit-hello-world": os.path.realpath(os.path.join(ORBIT_CLI_ROOT, "../../plugins/hello_world")),

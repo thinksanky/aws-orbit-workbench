@@ -41,7 +41,13 @@ def deploy(context: T, stack_name: str, app_filename: str, args: List[str]) -> N
     if not (isinstance(context, Context) or isinstance(context, FoundationContext)):
         raise ValueError("Unknown 'context' Type")
     cmd: str = (
-        "cdk deploy --require-approval never --progress events "
+        "which cdk"
+    )
+    _logger.debug("which cdk..")
+    sh.run(cmd=cmd)
+    
+    cmd: str = (
+        "cdk deploy --require-approval never --progress events -vvv "
         f"--toolkit-stack-name {context.cdk_toolkit.stack_name} "
         f"{get_app_argument(app_filename, args)} "
         f"{get_output_argument(context, stack_name)}"

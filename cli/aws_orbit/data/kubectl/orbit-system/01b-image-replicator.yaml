@@ -43,7 +43,7 @@ spec:
   secretName: imagereplication-pod-webhook-tls
 ---
 kind: MutatingWebhookConfiguration
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 metadata:
   name: orbit-imagereplication-pod-webhook
   annotations:

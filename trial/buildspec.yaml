@@ -6,7 +6,7 @@ phases:
       nodejs: 12
     commands:
       - env | sort
-      - npm install -g aws-cdk@1.100.0
+      - npm install -g aws-cdk@1.204.0
       - ls -al
       - M_BASE=https://raw.githubusercontent.com/awslabs/aws-orbit-workbench/release/${VERSION}/samples/manifests/trial
       - curl -LJOf $M_BASE/demo-lake-admin-cfn-template.yaml || true
@@ -17,7 +17,7 @@ phases:
       - curl -LJOf $M_BASE/lake-creator-plugins.yaml || true         
       - curl -LJOf $M_BASE/trial-manifest.yaml || true
       - MANIFEST=trial-manifest.yaml
-      - python3 -m venv .venv
+      - /opt/homebrew/python@3.8 -m venv .venv
       - . .venv/bin/activate
       - |
         yes | pip install aws-orbit==${VERSION} \

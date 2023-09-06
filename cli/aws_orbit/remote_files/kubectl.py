@@ -291,14 +291,14 @@ def _generate_kube_system_manifest(context: "Context", clean_up: bool = True) ->
 
 
 def set_secondary_vpc_cidr_env_vars() -> None:
-    sh.run("kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true")
-    sh.run("kubectl set env daemonset aws-node -n kube-system ENI_CONFIG_LABEL_DEF=topology.kubernetes.io/zone")
+    sh.run("$HOME/bin/kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true")
+    sh.run("$HOME/bin/kubectl set env daemonset aws-node -n kube-system ENI_CONFIG_LABEL_DEF=topology.kubernetes.io/zone")
 
 
 def deploy_eniconfig(az_subnet_map: Dict[str, str], context: "Context") -> None:
     _logger.debug("Prepping eniconfig deployments...")
     output_path = _generate_eni_configs(az_subnet_map, context, clean_up=True)
-    sh.run(f"kubectl apply -f {output_path}")
+    sh.run(f"$HOME/bin/kubectl apply -f {output_path}")
     _logger.debug("Deployted eniconfig deployments...")
 
 
@@ -608,8 +608,63 @@ def deploy_env(context: "Context") -> None:
 
         # orbit-system kustomizations
         output_paths = _generate_orbit_system_kustomizations(context=context)
+
+# Install KubeCTL
+# RUN curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
+#     chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+
+        sh.run(f"uname -a")
+        sh.run(f"aws --version")
+        sh.run(f"eksctl version")
+        sh.run(f"helm version")
+       # sh.run(f"kubectl version")
+
+       # sh.run(f"curl -LO 'https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl'")
+      # sh.run(f"curl -LO 'https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl'")
+      
+        sh.run(f"curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2023-08-16/bin/linux/amd64/kubectl")
+
+      #  sh.run(f"curl -LO 'https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl'")
+
+      #  sh.run(f"curl -LO 'https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256'")
+
+        sh.run(f"curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2023-08-16/bin/linux/amd64/kubectl.sha256")
+
+        #sh.run(f"install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl")\
+
+        sh.run(f"sha256sum -c kubectl.sha256")
+        
+        sh.run(f"chmod +x ./kubectl")
+
+        sh.run(f"mkdir -p $HOME/bin")
+        sh.run(f"cp ./kubectl $HOME/bin/kubectl")
+        # sh.run(f"echo $PATH")
+        # sh.run(f"set PATH=$HOME/bin:$PATH")
+        
+        #sh.run(f"mv ./kubectl /usr/local/bin/kubectl")
+
+        sh.run(f"which kubectl")
+
+        #sh.run(f"pwd")
+
+        #sh.run(f"ls -lt /usr/local/bin/kubectl")
+
+        sh.run(f"$HOME/bin/kubectl version --client")
+
+        # _logger.debug("Installing kfctl")
+
+        # sh.run(f"wget https://github.com/kubeflow/kfctl/releases/download/v0.7.1/kfctl_v0.7.1-2-g55f9b2a_linux.tar.gz")
+
+        # sh.run(f"tar -xvf kfctl_v0.7.1-2-g55f9b2a_linux.tar.gz")
+
+        # sh.run(f"chmod +x ./kfctl")
+
+        # sh.run(f"cp ./kfctl $HOME/kfctl")
+
+        # sh.run("$HOME/kfctl version")
+    
         for path in output_paths:
-            sh.run(f"kubectl apply -k {path} --context {k8s_context} --wait")
+            sh.run(f"$HOME/bin/kubectl apply -k {path} --context {k8s_context} --wait")
 
         # Wait until cert-manager webhook is available
         _confirm_endpoints(name="cert-manager-webhook", namespace="cert-manager", k8s_context=k8s_context)
@@ -619,11 +674,11 @@ def deploy_env(context: "Context") -> None:
         )
 
         output_path: Optional[str] = _generate_orbit_system_manifest(context=context, clean_up=True)
-        sh.run(f"kubectl apply -f {output_path} --context {k8s_context} --wait")
+        sh.run(f"$HOME/bin/kubectl apply -f {output_path} --context {k8s_context} --wait")
 
         output_path = _generate_orbit_image_replicator_manifest(context=context, clean_up=True)
         if output_path is not None:
-            sh.run(f"kubectl apply -f {output_path} --context {k8s_context} --wait")
+            sh.run(f"$HOME/bin/kubectl apply -f {output_path} --context {k8s_context} --wait")
 
         # Commented until we confirm this isn't needed
         # Restart orbit-system deployments and statefulsets to force reload of caches etc
@@ -647,39 +702,39 @@ def deploy_env(context: "Context") -> None:
             _confirm_endpoints(name="imagereplication-pod-webhook", namespace="orbit-system", k8s_context=k8s_context)
             if context.install_ssm_agent:
                 sh.run(
-                    "kubectl rollout restart daemonsets -n orbit-system-ssm-daemons "
+                    "$HOME/bin/kubectl rollout restart daemonsets -n orbit-system-ssm-daemons "
                     f"ssm-agent-installer --context {k8s_context}"
                 )
 
         # kube-system kustomizations
         output_paths = _generate_kube_system_kustomizations(context=context)
         for output_path in output_paths:
-            sh.run(f"kubectl apply -k {output_path} --context {k8s_context} --wait")
+            sh.run(f"$HOME/bin/kubectl apply -k {output_path} --context {k8s_context} --wait")
 
         # kube-system manifests
         output_path = _generate_kube_system_manifest(context=context)
-        sh.run(f"kubectl apply -f {output_path} --context {k8s_context} --wait")
+        sh.run(f"$HOME/bin/kubectl apply -f {output_path} --context {k8s_context} --wait")
 
         # Enable ENIs
         _enable_eni(k8s_context=k8s_context)
 
         # kubeflow-namespaces
         output_path = _kubeflow_namespaces(context=context)
-        sh.run(f"kubectl apply -f {output_path} --context {k8s_context} --wait")
+        sh.run(f"$HOME/bin/kubectl apply -f {output_path} --context {k8s_context} --wait")
 
         kubeflow.deploy_kubeflow(context=context)
 
         # env
         output_paths = _generate_orbit_system_env_kustomizations(context=context)
         for output_path in output_paths:
-            sh.run(f"kubectl apply -k {output_path} --context {k8s_context} --wait")
+            sh.run(f"$HOME/bin/kubectl apply -k {output_path} --context {k8s_context} --wait")
 
         # Patch Kubeflow
         _logger.debug("Orbit applying KubeFlow patch")
         jupyter_launcher_config_map, patch = _generate_kubeflow_patch(context=context)
-        sh.run(f"kubectl apply -f {jupyter_launcher_config_map} --context {k8s_context} --wait")
-        sh.run(f'kubectl patch deployment -n kubeflow jupyter-web-app-deployment --patch "{patch}"')
-        sh.run("kubectl rollout restart deployment jupyter-web-app-deployment -n kubeflow")
+        sh.run(f"$HOME/bin/kubectl apply -f {jupyter_launcher_config_map} --context {k8s_context} --wait")
+        sh.run(f'$HOME/bin/kubectl patch deployment -n kubeflow jupyter-web-app-deployment --patch "{patch}"')
+        sh.run("$HOME/bin/kubectl rollout restart deployment jupyter-web-app-deployment -n kubeflow")
 
         _apply_deployment_patch_force_env_nodes("istio-system")
         _apply_deployment_patch_force_env_nodes("knative-serving")
@@ -692,7 +747,7 @@ def deploy_env(context: "Context") -> None:
                 '{"spec":{"template":{"metadata":{"labels":{"orbit/node-type":"fargate"}},'
                 '"spec":{"nodeSelector": null}}}}'
             )
-            sh.run(f"kubectl patch deployment -n istio-system authzadaptor --patch '{patch}'")
+            sh.run(f"$HOME/bin/kubectl patch deployment -n istio-system authzadaptor --patch '{patch}'")
 
             patch = (
                 '{"spec":{"template":{"metadata":{"labels":{"orbit/node-type":"fargate"}},'
@@ -700,7 +755,7 @@ def deploy_env(context: "Context") -> None:
                 '["--ingress-class=alb","--cluster-name=$(CLUSTER_NAME)","--aws-vpc-id=VPC_ID"]}]}}}}'
             )
             patch = patch.replace("VPC_ID", cast(str, context.networking.vpc_id))
-            sh.run(f"kubectl patch deployment -n kubeflow alb-ingress-controller --patch '{patch}'")
+            sh.run(f"$HOME/bin/kubectl patch deployment -n kubeflow alb-ingress-controller --patch '{patch}'")
 
         # Patch the kubeflow mpi-operator deployment to version lock the images to v0.2.3
         patch = (
@@ -708,7 +763,7 @@ def deploy_env(context: "Context") -> None:
             '"--lock-namespace","kubeflow","--kubectl-delivery-image","mpioperator/kubectl-delivery:v0.2.3"],'
             '"image":"mpioperator/mpi-operator:v0.2.3"}]}}}}'
         )
-        sh.run(f"kubectl patch deployment -n kubeflow mpi-operator --patch '{patch}'")
+        sh.run(f"$HOME/bin/kubectl patch deployment -n kubeflow mpi-operator --patch '{patch}'")
 
         # Confirm env Service Endpoints
         _confirm_endpoints(name="landing-page-service", namespace="orbit-system", k8s_context=k8s_context)
@@ -716,14 +771,14 @@ def deploy_env(context: "Context") -> None:
 
 def _enable_eni(k8s_context: str) -> None:
     _logger.debug("Setting aws-node daemonset in kube-system -- ENABLE_POD_ENI=true")
-    sh.run(f"kubectl set env daemonset aws-node -n kube-system --context {k8s_context} ENABLE_POD_ENI=true")
+    sh.run(f"$HOME/bin/kubectl set env daemonset aws-node -n kube-system --context {k8s_context} ENABLE_POD_ENI=true")
 
     _logger.debug("Patch aws-node daemonset, container aws-vpc-cni-init -- DISABLE_TCP_EARLY_DEMUX=true")
     patch = (
         '{"spec": {"template": {"spec": {"initContainers": '
         '[{"env":[{"name":"DISABLE_TCP_EARLY_DEMUX","value":"true"}],"name":"aws-vpc-cni-init"}]}}}}'
     )
-    sh.run(f"kubectl patch daemonset aws-node -n kube-system --context {k8s_context} --patch '{patch}'")
+    sh.run(f"$HOME/bin/kubectl patch daemonset aws-node -n kube-system --context {k8s_context} --patch '{patch}'")
 
 
 def _apply_deployment_patch_force_env_nodes(namespace: str) -> None:
@@ -751,7 +806,7 @@ def deploy_team(context: "Context", team_context: "TeamContext") -> None:
         k8s_context = get_k8s_context(context=context)
         _logger.debug("kubectl context: %s", k8s_context)
         output_path = _generate_team_context(context=context, team_context=team_context)
-        sh.run(f"kubectl apply -f {output_path} --context {k8s_context} --wait")
+        sh.run(f"$HOME/bin/kubectl apply -f {output_path} --context {k8s_context} --wait")
 
 
 def destroy_env(context: "Context") -> None:
@@ -765,7 +820,7 @@ def destroy_env(context: "Context") -> None:
             # Here we remove some finalizers that can cause our delete to hang indefinitely
             try:
                 sh.run(
-                    "kubectl patch crd/trainingjobs.sagemaker.aws.amazon.com "
+                    "$HOME/bin/kubectl patch crd/trainingjobs.sagemaker.aws.amazon.com "
                     '--patch \'{"metadata":{"finalizers":[]}}\' --type=merge'
                     f" --context {k8s_context}"
                 )
@@ -774,13 +829,13 @@ def destroy_env(context: "Context") -> None:
 
             output_path = _generate_orbit_system_manifest(context=context)
             sh.run(
-                f"kubectl delete -f {output_path} --grace-period=0 --force "
+                f"$HOME/bin/kubectl delete -f {output_path} --grace-period=0 --force "
                 f"--ignore-not-found --wait --context {k8s_context}"
             )
             output_paths = _generate_orbit_system_kustomizations(context=context, clean_up=True)
             for output_path in output_paths:
                 sh.run(
-                    f"kubectl delete -k {output_path} --grace-period=0 --force "
+                    f"$HOME/bin/kubectl delete -k {output_path} --grace-period=0 --force "
                     f"--ignore-not-found --wait --context {k8s_context}"
                 )
 
@@ -801,7 +856,7 @@ def destroy_teams(context: "Context") -> None:
         utils.print_dir(dir=output_path)
         try:
             sh.run(
-                f"kubectl delete -f {output_path} --grace-period=0 --force "
+                f"$HOME/bin/kubectl delete -f {output_path} --grace-period=0 --force "
                 f"--ignore-not-found --wait=false --context {k8s_context}"
             )
         except exceptions.FailedShellCommand as ex:
@@ -818,8 +873,8 @@ def destroy_team(context: "Context", team_context: "TeamContext") -> None:
         _logger.debug("Attempting kubectl delete for team %s", team_context.name)
         output_path = _generate_team_context(context=context, team_context=team_context)
         sh.run(
-            f"kubectl delete -f {output_path} --grace-period=0 --force "
+            f"$HOME/bin/kubectl delete -f {output_path} --grace-period=0 --force "
             f"--ignore-not-found --wait --context {k8s_context}"
         )
         # Destory all related user spaces
-        sh.run(f"kubectl delete namespaces -l orbit/team={team_context.name} --context {k8s_context}")
+        sh.run(f"$HOME/bin/kubectl delete namespaces -l orbit/team={team_context.name} --context {k8s_context}")

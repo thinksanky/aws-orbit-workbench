@@ -33,7 +33,6 @@ spec:
           path: /convert
       conversionReviewVersions:
       - v1
-      - v1beta1
   group: cert-manager.io
   names:
     categories:
@@ -976,7 +975,6 @@ spec:
           path: /convert
       conversionReviewVersions:
       - v1
-      - v1beta1
   group: cert-manager.io
   names:
     categories:
@@ -2748,7 +2746,6 @@ spec:
           path: /convert
       conversionReviewVersions:
       - v1
-      - v1beta1
   group: acme.cert-manager.io
   names:
     categories:
@@ -8776,7 +8773,6 @@ spec:
           path: /convert
       conversionReviewVersions:
       - v1
-      - v1beta1
   group: cert-manager.io
   names:
     categories:
@@ -16803,7 +16799,6 @@ spec:
           path: /convert
       conversionReviewVersions:
       - v1
-      - v1beta1
   group: cert-manager.io
   names:
     categories:
@@ -24826,7 +24821,6 @@ spec:
           path: /convert
       conversionReviewVersions:
       - v1
-      - v1beta1
   group: acme.cert-manager.io
   names:
     categories:
@@ -26823,7 +26817,6 @@ metadata:
 webhooks:
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: cert-manager-webhook
@@ -26859,7 +26852,6 @@ metadata:
 webhooks:
 - admissionReviewVersions:
   - v1
-  - v1beta1
   clientConfig:
     service:
       name: cert-manager-webhook

@@ -113,7 +113,7 @@ def cdk_deploy(
         raise ValueError(f"context.cdk_toolkit_stack_name: {context.cdk_toolkit.stack_name}")
     args: List[str] = [stack_name, context.name, team_context.name, _serialize_parameters(parameters=parameters)]
     cmd: str = (
-        "cdk deploy --require-approval never --progress events "
+        "cdk deploy --require-approval never --progress events -vv "
         f"--toolkit-stack-name {context.cdk_toolkit.stack_name} "
         f"{cdk.get_app_argument(app_filename, args)} "
         f"{cdk.get_output_argument(context, stack_name)}"

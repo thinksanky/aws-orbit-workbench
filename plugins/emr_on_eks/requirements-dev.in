@@ -13,7 +13,7 @@ types-requests~=2.25.6
 types-setuptools~=57.0.2
 -e ../../cli/
 -e .
-aws-cdk.core~=1.100.0
-aws-cdk.aws-s3~=1.100.0
-aws-cdk.aws-ssm~=1.100.0
-aws-cdk.aws-iam~=1.100.0
+aws-cdk.core~=1.204.0
+aws-cdk.aws-s3~=1.204.0
+aws-cdk.aws-ssm~=1.204.0
+aws-cdk.aws-iam~=1.204.0

@@ -17,4 +17,14 @@
 
 set -ex
 export AWS_CLUSTER_NAME=${cluster_name}
-kfctl apply -V -f kfctl_aws.yaml --context {k8s_context}
+
+wget https://github.com/kubeflow/kfctl/releases/download/v1.2.0/kfctl_v1.2.0-0-gbc038f9_linux.tar.gz
+tar -xvf kfctl_v1.2.0-0-gbc038f9_linux.tar.gz
+
+chmod +x ./kfctl
+
+# wget https://github.com/kubeflow/manifests/archive/refs/tags/v1.2.0.tar.gz
+
+# tar -xvf v1.2.0.tar.gz --strip-components=1
+
+# ./kfctl apply -V -f kfctl_aws.yaml

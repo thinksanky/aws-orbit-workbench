@@ -33,7 +33,7 @@ _logger: logging.Logger = logging.getLogger(__name__)
 MANIFEST: Dict[str, Any] = {
     "apiVersion": "eksctl.io/v1alpha5",
     "kind": "ClusterConfig",
-    "metadata": {"name": None, "region": None, "version": "1.20"},
+    "metadata": {"name": None, "region": None, "version": "1.27"},
     "vpc": {"id": None, "cidr": None, "subnets": {"private": {}, "public": {}}},
     "iam": {"serviceRoleARN": None},
     "cloudWatch": {"clusterLogging": {"enableTypes": ["*"]}},
@@ -143,9 +143,9 @@ def generate_manifest(context: "Context", name: str, nodegroups: Optional[List[M
     tags["Env"] = f"orbit-{context.name}"
 
     MANIFEST["addons"] = [
-        {"name": "vpc-cni", "version": "v1.9.0", "attachPolicyARNs": ["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]},
-        {"name": "kube-proxy", "version": "v1.20.4-eksbuild.2"},
-        {"name": "coredns", "version": "v1.8.3-eksbuild.1"},
+        {"name": "vpc-cni", "version": "v1.14.0-eksbuild.3", "attachPolicyARNs": ["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]},
+        {"name": "kube-proxy", "version": "v1.27.4-eksbuild.2"},
+        {"name": "coredns", "version": "v1.10.1-eksbuild.3"},
     ]
 
     # Env
@@ -168,6 +168,7 @@ def generate_manifest(context: "Context", name: str, nodegroups: Optional[List[M
     # Fill nodegroups configs
     if nodegroups:
         for nodegroup in nodegroups:
+            _logger.debug("nodegroup:\n%s", pprint.pformat(nodegroup))
             MANIFEST["managedNodeGroups"].append(create_nodegroup_structure(context=context, nodegroup=nodegroup))
 
     MANIFEST["cloudWatch"] = {"clusterLogging": {"enableTypes": ["*"]}}

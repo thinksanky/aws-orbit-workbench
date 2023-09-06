@@ -89,7 +89,7 @@ spec:
             claimName: team-efs
       restartPolicy: Always
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: orbit-voila

@@ -33,7 +33,7 @@ _logger: logging.Logger = logging.getLogger(__name__)
 
 _BUILD_WAIT_POLLING_DELAY: float = 5  # SECONDS
 
-CDK_VERSION = "~=1.100.0"
+CDK_VERSION = "~=1.204.0"
 CDK_MODULES = [
     "aws_cdk.core",
     "aws-cdk.aws-ec2",
@@ -152,6 +152,7 @@ def start(
             "s3Logs": {"status": "DISABLED"},
         },
     }
+    _logger.debug("build_params: %s", build_params)
     if repo:
         build_params["imageOverride"] = repo
     if credentials:
@@ -255,6 +256,7 @@ def generate_spec(
             "aws codeartifact login --tool pip "
             f"--domain {context.codeartifact_domain} "
             f"--repository {context.codeartifact_repository}"
+            f"--domain-owner 451404659786"
         )
         # Adding Codeartifact based pip.conf, later used for Dockerfile build.
         install.append("cp ~/.config/pip/pip.conf .")
@@ -303,7 +305,7 @@ def generate_spec(
         "version": 0.2,
         "phases": {
             "install": {
-                "runtime-versions": {"python": 3.7, "nodejs": 12, "docker": 19},
+                "runtime-versions": {"python": 3.8, "nodejs": 12, "docker": 19},
                 "commands": install,
             },
             "pre_build": {"commands": pre},

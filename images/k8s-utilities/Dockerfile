@@ -1,7 +1,7 @@
 FROM public.ecr.aws/v3o4w1g6/aws-orbit-workbench/python:3.8.7-slim-buster as base
 
 # This makes it easy to build tagged images with different `kubectl` versions.
-ARG KUBECTL_VERSION="v1.19.2"
+ARG KUBECTL_VERSION="v1.24.16"
 
 # Set by docker automatically
 ARG TARGETOS="linux"
