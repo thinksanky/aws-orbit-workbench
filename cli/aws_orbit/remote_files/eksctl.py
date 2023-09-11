@@ -33,7 +33,7 @@ _logger: logging.Logger = logging.getLogger(__name__)
 MANIFEST: Dict[str, Any] = {
     "apiVersion": "eksctl.io/v1alpha5",
     "kind": "ClusterConfig",
-    "metadata": {"name": None, "region": None, "version": "1.23"},
+    "metadata": {"name": None, "region": None, "version": "1.27"},
     "vpc": {"id": None, "cidr": None, "subnets": {"private": {}, "public": {}}},
     "iam": {"serviceRoleARN": None},
     "cloudWatch": {"clusterLogging": {"enableTypes": ["*"]}},
@@ -144,18 +144,16 @@ def generate_manifest(context: "Context", name: str, nodegroups: Optional[List[M
 
     MANIFEST["addons"] = [
         {"name": "vpc-cni", "version": "v1.14.0-eksbuild.3", "attachPolicyARNs": ["arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]},
-        {"name": "kube-proxy", "version": "v1.23.16-eksbuild.2"},
-        {"name": "coredns", "version": "v1.8.7-eksbuild.7"},
+        {"name": "kube-proxy", "version": "v1.27.4-eksbuild.2"},
+        {"name": "coredns", "version": "v1.10.1-eksbuild.3"},
     ]
-    #     {"name": "aws-ebs-csi-driver", "version": "v1.22.0-eksbuild.2"},
-    # ]
 
     # Env
     MANIFEST["managedNodeGroups"].append(
         {
             "name": "env",
             "privateNetworking": True,
-            "instanceType": "t2.micro",
+            "instanceType": "m5.large",
             "minSize": 2,
             "desiredCapacity": 3,
             "maxSize": 6,

@@ -622,14 +622,12 @@ def deploy_env(context: "Context") -> None:
        # sh.run(f"curl -LO 'https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl'")
       # sh.run(f"curl -LO 'https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl'")
       
-        # sh.run(f"curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.7/2023-08-16/bin/linux/amd64/kubectl")
-        # sh.run(f"curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.7/2023-08-16/bin/linux/amd64/kubectl.sha256")
-
-        # sh.run(f"curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.4/2023-08-16/bin/linux/amd64/kubectl")
-        # sh.run(f"curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.4/2023-08-16/bin/linux/amd64/kubectl.sha256")
-
-        
         sh.run(f"curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2023-08-16/bin/linux/amd64/kubectl")
+
+      #  sh.run(f"curl -LO 'https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl'")
+
+      #  sh.run(f"curl -LO 'https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256'")
+
         sh.run(f"curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2023-08-16/bin/linux/amd64/kubectl.sha256")
 
         #sh.run(f"install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl")\
@@ -653,16 +651,18 @@ def deploy_env(context: "Context") -> None:
 
         sh.run(f"$HOME/bin/kubectl version --client")
 
-        # REMOTE_FILES_PATH = os.path.join(ORBIT_CLI_ROOT, "remote_files")
+        # _logger.debug("Installing kfctl")
 
-        # _logger.debug(f"ktcl sh script dir: {REMOTE_FILES_PATH}")
-        # utils.print_dir(REMOTE_FILES_PATH)
-        # sh.run("./apply_kctl.sh", cwd=REMOTE_FILES_PATH)
-  
-        # sh.run(f"kustomize version")
+        # sh.run(f"wget https://github.com/kubeflow/kfctl/releases/download/v0.7.1/kfctl_v0.7.1-2-g55f9b2a_linux.tar.gz")
 
-        kubeflow.deploy_kubeflow(context=context)
+        # sh.run(f"tar -xvf kfctl_v0.7.1-2-g55f9b2a_linux.tar.gz")
 
+        # sh.run(f"chmod +x ./kfctl")
+
+        # sh.run(f"cp ./kfctl $HOME/kfctl")
+
+        # sh.run("$HOME/kfctl version")
+    
         for path in output_paths:
             sh.run(f"$HOME/bin/kubectl apply -k {path} --context {k8s_context} --wait")
 
@@ -722,7 +722,7 @@ def deploy_env(context: "Context") -> None:
         output_path = _kubeflow_namespaces(context=context)
         sh.run(f"$HOME/bin/kubectl apply -f {output_path} --context {k8s_context} --wait")
 
-        # kubeflow.deploy_kubeflow(context=context)
+        kubeflow.deploy_kubeflow(context=context)
 
         # env
         output_paths = _generate_orbit_system_env_kustomizations(context=context)
