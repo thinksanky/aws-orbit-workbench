@@ -125,7 +125,7 @@ def deploy_kubeflow(context: Context) -> None:
         utils.print_dir(output_path)
         sh.run("./apply_kf.sh", cwd=output_path)
         time.sleep(120)
-        #sh.run("$HOME/bin/kubectl  delete ds -n kubeflow nvidia-device-plugin-daemonset")
+       # sh.run("$HOME/bin/kubectl  delete ds -n kubeflow nvidia-device-plugin-daemonset")
 
 
 def destroy_kubeflow(context: Context) -> None:
